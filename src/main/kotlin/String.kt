@@ -1,5 +1,9 @@
 package cherhy.batch.settlement.util.extension
 
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun String.toSnakeCase(): String {
@@ -38,4 +42,24 @@ fun String.toPascalCase(): String {
                 word.replaceFirstChar { it.titlecase(Locale.getDefault()) }
             }
     return firstWord + pascalCase
+}
+
+fun String.toLocalDate(): LocalDate {
+    val data = this.replace("-", "").substring(0, 8)
+    return LocalDate.parse(data, DateTimeFormatter.ofPattern("yyyyMMdd"))
+}
+
+fun String.isNumber() =
+    this.matches(Regex("^[0-9]*\$"))
+
+fun String.toZonedDateTime(): ZonedDateTime {
+    val year = if (this.length >= 4) this.substring(0, 4).toInt() else 0
+    val month = if (this.length >= 6) this.substring(4, 6).toInt() else 0
+    val day = if (this.length >= 8) this.substring(6, 8).toInt() else 0
+    val hour = if (this.length >= 10) this.substring(8, 10).toInt() else 0
+    val minute = if (this.length >= 12) this.substring(10, 12).toInt() else 0
+    val second = if (this.length >= 14) this.substring(12, 14).toInt() else 0
+    val nanoSecond = if (this.length >= 17) this.substring(14, 17).toInt() * 1000000 else 0
+
+    return ZonedDateTime.of(year, month, day, hour, minute, second, nanoSecond, ZoneOffset.UTC)
 }
